@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ConfirmationCaption" xml:space="preserve">
+    <value>Подтверждение</value>
+  </data>
+  <data name="ConfirmationClearFileList" xml:space="preserve">
+    <value>Вы уверены что хотите очистить список файлов?</value>
+  </data>
+  <data name="ConfirmationRecode" xml:space="preserve">
+    <value>Вы уверены что хотите перекодировать {0} файл(ов) в кодировку {1}?</value>
+  </data>
+  <data name="ProgressEncoding" xml:space="preserve">
+    <value>Перекодирую '{0}' в '{1}'...</value>
+  </data>
+  <data name="ProgressFileLoaded" xml:space="preserve">
+    <value>Загружен файл '{0}'</value>
+  </data>
+  <data name="ProgressFileLoadError" xml:space="preserve">
+    <value>Ошибка в '{0}' - '{1}'</value>
+  </data>
+  <data name="ProgressFileMoved" xml:space="preserve">
+    <value>Файл '{0}' перемещен в '{1}'</value>
+  </data>
+  <data name="ProgressFileMoveError" xml:space="preserve">
+    <value>'{0}' (новое имя: '{1}')</value>
+  </data>
+  <data name="ProgressScanFolder" xml:space="preserve">
+    <value>Сканирую '{0}'...</value>
+  </data>
+  <data name="StatusBarFilesCount" xml:space="preserve">
+    <value>Отмечено {0} из {1} файл(ов)</value>
+  </data>
+  <data name="ParseFileErrorNoAuthorLastName" xml:space="preserve">
+    <value>Нет фамилии автора.</value>
+  </data>
+  <data name="ParseFileErrorNoBookTitle" xml:space="preserve">
+    <value>Нет названия книги.</value>
+  </data>
+  <data name="RenameMenuName" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="ParseFileErrorNoBookGenre" xml:space="preserve">
+    <value>Нет жанра книги.</value>
+  </data>
+  <data name="ParseFileListLoad" xml:space="preserve">
+    <value>Загружаю список из {0} файлов...</value>
+  </data>
+  <data name="ParseFileErrorNoBookID" xml:space="preserve">
+    <value>Нет уникального идентификатора</value>
+  </data>
+  <data name="ProgressFileAlreadyLoaded" xml:space="preserve">
+    <value>Файл '{0}' уже загружен</value>
+  </data>
+  <data name="CopyFileError" xml:space="preserve">
+    <value>Ошибка копирования '{0}' - '{1}'</value>
+  </data>
+  <data name="CopyFileSuccess" xml:space="preserve">
+    <value>Файл '{0}' скопирован в '{1}'</value>
+  </data>
+  <data name="ExecuteCommand" xml:space="preserve">
+    <value>Выполняю комманду '{0}' параметры '{1}'...</value>
+  </data>
+  <data name="ExecuteCommandError" xml:space="preserve">
+    <value>Ошибка выполнения команды '{0}' - '{1}'</value>
+  </data>
+  <data name="MoveFileError" xml:space="preserve">
+    <value>Ошибка перемещения '{0}' - '{1}'</value>
+  </data>
+  <data name="MoveFileSuccess" xml:space="preserve">
+    <value>Файл '{0}' перемещен в '{1}'</value>
+  </data>
+  <data name="ProgressEncodingError" xml:space="preserve">
+    <value>Ошибка перекодирования '{0}' - '{1}'</value>
+  </data>
+  <data name="ConfirmationRename" xml:space="preserve">
+    <value>Вы уверены что хотите переименовать имена {0} файлов используя профиль '{1}'?</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="RenameFileError" xml:space="preserve">
+    <value>Ошибка переименования '{0}' - '{1}'</value>
+  </data>
+  <data name="RenameFileSuccess" xml:space="preserve">
+    <value>Файл '{0}' переименован в '{1}'</value>
+  </data>
+  <data name="ProgressEncodingAlreadyEncoded" xml:space="preserve">
+    <value>Файл '{0}' уже в кодировке '{1}'</value>
+  </data>
+  <data name="ProgressFileSizeChange" xml:space="preserve">
+    <value>  {0} -&gt; {1}</value>
+  </data>
+  <data name="FileSizeText" xml:space="preserve">
+    <value>{0} Кб</value>
+  </data>
+  <data name="DisplayNoSerie" xml:space="preserve">
+    <value>(Без серии)</value>
+  </data>
+  <data name="ZipErrorMoreThanOneFile" xml:space="preserve">
+    <value>Архив содержит более чем 1 файл</value>
+  </data>
+  <data name="ZipErrorNoFB2" xml:space="preserve">
+    <value>Архив не содержит файлов FB2</value>
+  </data>
+  <data name="ZipErrorNoFiles" xml:space="preserve">
+    <value>Архив не содержит файлов</value>
+  </data>
+  <data name="ProgressCompressFile" xml:space="preserve">
+    <value>Архивирую файл '{0}'...</value>
+  </data>
+  <data name="ProgressCompressFileError" xml:space="preserve">
+    <value>Ошибка архивирования '{0}' - '{1}'</value>
+  </data>
+  <data name="ProgressExtractFile" xml:space="preserve">
+    <value>Распаковываю файл '{0}'...</value>
+  </data>
+  <data name="ProgressExtractFileError" xml:space="preserve">
+    <value>Ошибка распаковки '{0}' - '{1}'</value>
+  </data>
+  <data name="ConfirmationCompress" xml:space="preserve">
+    <value>Вы уверены что хотите архивировать {0} файл(ов)?</value>
+  </data>
+  <data name="ConfirmationExtract" xml:space="preserve">
+    <value>Вы уверены что хотите распаковать {0} файл(ов)?</value>
+  </data>
+  <data name="ExecuteCommandWrongExtension" xml:space="preserve">
+    <value>Расширение файла '{0}' не совпадает с '{1}'...</value>
+  </data>
+  <data name="ProgressCompressFileAlreadyCompressed" xml:space="preserve">
+    <value>Файл '{0}' уже в архиве</value>
+  </data>
+  <data name="ProgressExtractFileAlreadyExtracted" xml:space="preserve">
+    <value>Файл '{0}' уже распакован</value>
+  </data>
+  <data name="ConfirmationCancel" xml:space="preserve">
+    <value>Вы уверены что хотите прервать выполнение текущей операции?</value>
+  </data>
+  <data name="ProgressCancelledByUser" xml:space="preserve">
+    <value>Операция прервана пользователем.</value>
+  </data>
+  <data name="RenameZIPtoFB2ZIP" xml:space="preserve">
+    <value>Переименовываю '{0}'...</value>
+  </data>
+  <data name="ConfirmationValidation" xml:space="preserve">
+    <value>Вы уверены что хотите проверить {0} файл(ов) на соответствие спецификации FictionBook v2.1?</value>
+  </data>
+  <data name="ProgressValidation" xml:space="preserve">
+    <value>Тестирую файл '{0}' на соответствие спецификации...</value>
+  </data>
+  <data name="ValidationError" xml:space="preserve">
+    <value>Ошибка (строка {0}, позиция {1}): {2}</value>
+  </data>
+  <data name="ValidationOk" xml:space="preserve">
+    <value> OK</value>
+  </data>
+  <data name="ValidationFileError" xml:space="preserve">
+    <value>Ошибка тестирования '{0}' - '{1}'</value>
+  </data>
+  <data name="TranslitMenuText" xml:space="preserve">
+    <value>(Транслит)</value>
+  </data>
+  <data name="CopyFileSkipped" xml:space="preserve">
+    <value>Копирование '{0}' отменено, '{1}'  уже существует</value>
+  </data>
+  <data name="OverwriteDialofFileAlreadyExists" xml:space="preserve">
+    <value>Файл уже существует '{0}'</value>
+  </data>
+  <data name="MoveFileSkip" xml:space="preserve">
+    <value>Перемещение '{0}' отменено, '{1}'  уже существует</value>
+  </data>
+  <data name="RenameFileSkip" xml:space="preserve">
+    <value>Переименование '{0}' отменено, '{1}'  уже существует</value>
+  </data>
+  <data name="FileDescriptionView" xml:space="preserve">
+    <value>Описание файла '{0}':</value>
+  </data>
+  <data name="ValidationWarning" xml:space="preserve">
+    <value>Недочет (строка {0}, позиция {1}): {2}</value>
+  </data>
+  <data name="ValidationErrorDuplicateId" xml:space="preserve">
+    <value>Идентификатор присутствует более одного раза: '{0}'</value>
+  </data>
+  <data name="ValidationErrorEmptyLink" xml:space="preserve">
+    <value>Пустая ссыка '{0}'</value>
+  </data>
+  <data name="ValidationErrorEmptyTag" xml:space="preserve">
+    <value>Пустой элемент: '{0}'</value>
+  </data>
+  <data name="ValidationErrorExternalLink" xml:space="preserve">
+    <value>Внешняя ссылка: '{0}'</value>
+  </data>
+  <data name="ValidationErrorExternalNote" xml:space="preserve">
+    <value>Внешняя запись: '{0}'</value>
+  </data>
+  <data name="ValidationErrorInvalidExternalLink" xml:space="preserve">
+    <value>Неверная внешняя ссылка: '{0}'</value>
+  </data>
+  <data name="ValidationErrorLocalExternalLink" xml:space="preserve">
+    <value>Локальная внешняя ссылка: '{0}'</value>
+  </data>
+  <data name="ValidationErrorNoLinksToObject" xml:space="preserve">
+    <value>Нет ссылок на объект: '{0}'</value>
+  </data>
+  <data name="ValidationErrorReferenceToAnUnknown" xml:space="preserve">
+    <value>Ссылка на несуществующий объект: '{0}'</value>
+  </data>
+  <data name="ProgressEditFile" xml:space="preserve">
+    <value>Редактирую метаданные файла '{0}'...</value>
+  </data>
+  <data name="ProgressEditFileError" xml:space="preserve">
+    <value>Ошибка редактирования '{0}' - '{1}'</value>
+  </data>
+</root>

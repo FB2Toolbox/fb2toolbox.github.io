@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:vs="http://schemas.microsoft.com/Visual-Studio-Intellisense"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="FB2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="renameProfiles" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="profile">
+                <xs:complexType>
+                  <xs:attribute name="name" type="xs:string" use="required" />
+                  <xs:attribute name="path" type="xs:string" use="required" />
+                  <xs:attribute name="fileName" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="globalTranslit" maxOccurs="1">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" name="char">
+                      <xs:complexType>
+                        <xs:attribute name="from" type="xs:string" use="required" />
+                        <xs:attribute name="to" type="xs:string" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="globalCharacterSubstitution">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" name="char">
+                      <xs:complexType>
+                        <xs:attribute name="from" type="xs:string" use="required" />
+                        <xs:attribute name="to" type="xs:string" use="required" />
+                        <xs:attribute name="repeat" type="xs:integer" use="optional" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="encodings" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="encoding">
+                <xs:complexType>
+                  <xs:attribute name="name" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="indentedFormatting" type="xs:boolean" use="required" />
+            <xs:attribute name="compressionEncoding" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="commands">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="checkedFiles">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="command">
+                      <xs:complexType>
+                        <xs:attribute name="name" type="xs:string" use="required" />
+                        <xs:attribute name="fileName" type="xs:string" use="required" />
+                        <xs:attribute name="arguments" type="xs:string" use="required" />
+                        <xs:attribute name="onlyWithExtension" type="xs:string" use="optional" />
+                        <xs:attribute name="createNoWindow" type="xs:boolean" use="optional" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="focusedFile">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" name="command">
+                      <xs:complexType>
+                        <xs:attribute name="name" type="xs:string" use="required" />
+                        <xs:attribute name="fileName" type="xs:string" use="required" />
+                        <xs:attribute name="arguments" type="xs:string" use="required" />
+                        <xs:attribute name="waitAndReload" type="xs:boolean" use="optional" />
+                        <xs:attribute name="onlyWithExtension" type="xs:string" use="optional" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="genreSubstitution">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="genre">
+                <xs:complexType>
+                  <xs:attribute name="from" type="xs:string" use="required" />
+                  <xs:attribute name="to" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="normalizeNames" type="xs:boolean" use="optional" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
