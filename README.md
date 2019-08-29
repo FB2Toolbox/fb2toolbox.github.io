@@ -23,6 +23,6 @@
 
 <https://github.com/fb2toolbox/FB2Toolbox.github.io/releases>
 
-## Wiki
+## Официальный сайт
 
-Информация по настройке и работе программы [здесь](https://github.com/fb2toolbox/FB2Toolbox.github.io/wiki/Начало-работы)
+Официальный сайт FB2 Toolbox: <https://fb2oolbox.github.io>
