@@ -25,4 +25,4 @@
 
 ## Официальный сайт
 
-Официальный сайт FB2 Toolbox: <https://fb2oolbox.github.io>
+Официальный сайт FB2 Toolbox: <https://fb2toolbox.github.io>
