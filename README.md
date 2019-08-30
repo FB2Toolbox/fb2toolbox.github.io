@@ -17,12 +17,6 @@
 - Поддержка работы с архивами .FB2.ZIP
 - Тестирование файлов FB2 на соответствие стандарту 2.1
 
-## Скачать
+## Официальный сайт
 
-Последнюю версию можно скачать здесь:
-
-<https://github.com/fb2toolbox/FB2Toolbox.github.io/releases>
-
-## Wiki
-
-Информация по настройке и работе программы [здесь](https://github.com/fb2toolbox/FB2Toolbox.github.io/wiki/Начало-работы)
+Официальный сайт FB2 Toolbox: <https://fb2toolbox.github.io>
