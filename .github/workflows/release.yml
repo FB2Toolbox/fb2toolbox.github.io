@@ -1,0 +1,96 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Версия релиза (например, v1.9.0)'
+        required: true
+        type: string
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+    
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+    
+    - name: Restore NuGet packages
+      run: nuget restore FB2Toolbox.sln
+    
+    - name: Build solution
+      run: msbuild FB2Toolbox.sln /p:Configuration=Release /p:Platform="Any CPU"
+    
+    - name: Determine version
+      id: version
+      shell: bash
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+        else
+          VERSION="${GITHUB_REF#refs/tags/}"
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "version_number=${VERSION#v}" >> $GITHUB_OUTPUT
+    
+    - name: Prepare release notes
+      id: release_notes
+      shell: bash
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        RELEASE_NOTES_FILE="docs/RELEASE_${VERSION}.md"
+        
+        # Check if release notes file exists
+        if [ -f "$RELEASE_NOTES_FILE" ]; then
+          echo "Using release notes from $RELEASE_NOTES_FILE"
+          cp "$RELEASE_NOTES_FILE" release_notes.md
+        else
+          echo "Release notes file not found: $RELEASE_NOTES_FILE"
+          echo "Creating default release notes"
+          echo "Релиз версии $VERSION" > release_notes.md
+        fi
+        
+        # Display the notes for debugging
+        echo "Release notes:"
+        cat release_notes.md
+    
+    - name: Prepare release files
+      shell: bash
+      run: |
+        mkdir release
+        
+        # Copy required files
+        cp "src/FB2Toolbox/bin/Release/FB2Toolbox.exe" release/
+        cp "src/FB2Toolbox/bin/Release/FB2Toolbox.exe.config" release/
+        cp "src/FB2Toolbox/bin/Release/Ionic.Zip.Reduced.dll" release/
+        cp README.md release/
+        cp LICENSE.md release/
+        
+        # Create zip archive
+        cd release
+        7z a -tzip "../FB2Toolbox-${{ steps.version.outputs.version }}.zip" *
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: FB2Toolbox ${{ steps.version.outputs.version }}
+        body_path: release_notes.md
+        files: |
+          FB2Toolbox-${{ steps.version.outputs.version }}.zip
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
