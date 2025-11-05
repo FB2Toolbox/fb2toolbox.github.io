@@ -73,7 +73,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ConfigTests.cs" />
+    <Compile Include="FB2BookTests.cs" />
+    <Compile Include="FB2FileAdvancedTests.cs" />
     <Compile Include="FB2Tests.cs" />
+    <Compile Include="FileUtilsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
