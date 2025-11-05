@@ -1,7 +1,6 @@
 ﻿using System;
+using FB2Toolbox.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FB2Toolbox;
-using System.IO;
 
 namespace FB2ToolboxUnitTest
 {
@@ -14,8 +13,8 @@ namespace FB2ToolboxUnitTest
         public void FB2File_CompareTo_ReturnsSameForIdenticalFiles()
         {
             // Arrange
-            FB2File file1 = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2");
-            FB2File file2 = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2");
+            FB2File file1 = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2");
+            FB2File file2 = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2");
 
             // Act
             int result = file1.CompareTo(file2);
@@ -31,7 +30,7 @@ namespace FB2ToolboxUnitTest
         public void FB2File_CompareTo_ThrowsExceptionForInvalidType()
         {
             // Arrange
-            FB2File file = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2");
+            FB2File file = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2");
             var invalidObject = "not a file";
 
             // Act
@@ -46,13 +45,13 @@ namespace FB2ToolboxUnitTest
         public void FB2File_ToString_ReturnsFileName()
         {
             // Arrange
-            FB2File file = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2");
+            FB2File file = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2");
 
             // Act
             string result = file.ToString();
 
             // Assert
-            Assert.AreEqual("?????????? ?????? - ????????.fb2", result);
+            Assert.AreEqual("Макиавелли Николо - Государь.fb2", result);
         }
 
         [TestMethod]
@@ -61,7 +60,7 @@ namespace FB2ToolboxUnitTest
         public void FB2File_IsZIP_ReturnsFalseForFB2()
         {
             // Arrange
-            FB2File file = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2");
+            FB2File file = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2");
 
             // Act
             bool result = file.IsZIP();
@@ -76,7 +75,7 @@ namespace FB2ToolboxUnitTest
         public void FB2File_IsZIP_ReturnsTrueForFB2ZIP()
         {
             // Arrange
-            FB2File file = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2.zip");
+            FB2File file = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2.zip");
 
             // Act
             bool result = file.IsZIP();
@@ -91,8 +90,8 @@ namespace FB2ToolboxUnitTest
         public void FB2File_IsZIP_WithFilename_ReturnsFalseForFB2()
         {
             // Arrange
-            FB2File file = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2");
-            string testPath = @"TestFiles\?????????? ?????? - ????????.fb2";
+            FB2File file = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2");
+            string testPath = @"TestFiles\Макиавелли Николо - Государь.fb2";
 
             // Act
             bool result = file.IsZIP(testPath);
@@ -107,7 +106,7 @@ namespace FB2ToolboxUnitTest
         public void FB2File_FileInformation_ProvidesCorrectDetails()
         {
             // Arrange
-            FB2File file = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2");
+            FB2File file = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2");
 
             // Act
             var fileInfo = file.FileInformation;
@@ -115,7 +114,7 @@ namespace FB2ToolboxUnitTest
             // Assert
             Assert.IsNotNull(fileInfo, "FileInformation should not be null");
             Assert.IsTrue(fileInfo.Exists, "File should exist");
-            Assert.AreEqual("?????????? ?????? - ????????.fb2", fileInfo.Name, "File name should match");
+            Assert.AreEqual("Макиавелли Николо - Государь.fb2", fileInfo.Name, "File name should match");
             Assert.IsTrue(fileInfo.Length > 0, "File should have content");
         }
 
@@ -125,7 +124,7 @@ namespace FB2ToolboxUnitTest
         public void FB2File_Metadata_ContainsDescription()
         {
             // Arrange
-            FB2File file = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2");
+            FB2File file = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2");
 
             // Act
             var metadata = file.Metadata;
@@ -142,16 +141,16 @@ namespace FB2ToolboxUnitTest
         public void FB2File_UpdateFileInfo_ChangesFileInformation()
         {
             // Arrange
-            FB2File file = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2");
+            FB2File file = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2");
             string originalName = file.FileInformation.Name;
 
             // Act
-            file.UpdateFileInfo(@"TestFiles\?????????? ?????? - ????????.fb2.zip");
+            file.UpdateFileInfo(@"TestFiles\Макиавелли Николо - Государь.fb2.zip");
             string newName = file.FileInformation.Name;
 
             // Assert
             Assert.AreNotEqual(originalName, newName, "File name should be different after update");
-            Assert.AreEqual("?????????? ?????? - ????????.fb2.zip", newName, "New file name should match");
+            Assert.AreEqual("Макиавелли Николо - Государь.fb2.zip", newName, "New file name should match");
         }
 
         [TestMethod]
@@ -160,13 +159,13 @@ namespace FB2ToolboxUnitTest
         public void FB2File_BookInternalEncoding_IsSet()
         {
             // Arrange
-            FB2File file = new FB2File(@"TestFiles\?????????? ?????? - ????????.fb2");
+            FB2File file = new FB2File(@"TestFiles\Макиавелли Николо - Государь.fb2");
 
             // Act - access via reflection since it's protected internal
             var type = file.GetType();
-            var property = type.GetProperty("BookInternalEncoding", 
-                System.Reflection.BindingFlags.NonPublic | 
-                System.Reflection.BindingFlags.Instance | 
+            var property = type.GetProperty("BookInternalEncoding",
+                System.Reflection.BindingFlags.NonPublic |
+                System.Reflection.BindingFlags.Instance |
                 System.Reflection.BindingFlags.Public);
             var value = property.GetValue(file, null) as string;
 

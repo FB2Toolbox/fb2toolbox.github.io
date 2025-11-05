@@ -1,7 +1,7 @@
-﻿using FB2Toolbox.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
+using FB2Toolbox.Entities;
+using FB2Toolbox.Utilities;
 
 namespace FB2Toolbox.Managers
 {

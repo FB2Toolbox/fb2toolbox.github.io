@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Configuration;
-using System.Reflection;
-using System.IO;
 
 namespace FB2Toolbox
 {
@@ -109,8 +105,8 @@ namespace FB2Toolbox
     }
     public class CharacterSubstitutionElement : ConfigurationElement
     {
-        [ConfigurationProperty("from", IsRequired=true)]
-        [StringValidator(InvalidCharacters="\\")]
+        [ConfigurationProperty("from", IsRequired = true)]
+        [StringValidator(InvalidCharacters = "\\")]
         public string From
         {
             get
@@ -122,7 +118,7 @@ namespace FB2Toolbox
                 this["from"] = value;
             }
         }
-        [ConfigurationProperty("to", DefaultValue="")]
+        [ConfigurationProperty("to", DefaultValue = "")]
         public string To
         {
             get
@@ -135,7 +131,7 @@ namespace FB2Toolbox
             }
         }
         [ConfigurationProperty("repeat", DefaultValue = 1)]
-        [IntegerValidator(MinValue=1, MaxValue=50)]
+        [IntegerValidator(MinValue = 1, MaxValue = 50)]
         public int Repeat
         {
             get
@@ -181,7 +177,7 @@ namespace FB2Toolbox
                 this["name"] = value;
             }
         }
-        [ConfigurationProperty("fileName", IsRequired=true)]
+        [ConfigurationProperty("fileName", IsRequired = true)]
         public string FileName
         {
             get
@@ -193,7 +189,7 @@ namespace FB2Toolbox
                 this["fileName"] = value;
             }
         }
-        [ConfigurationProperty("arguments", IsRequired = false, DefaultValue="")]
+        [ConfigurationProperty("arguments", IsRequired = false, DefaultValue = "")]
         public string Arguments
         {
             get
