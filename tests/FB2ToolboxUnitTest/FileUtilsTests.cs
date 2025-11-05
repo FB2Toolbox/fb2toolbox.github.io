@@ -1,7 +1,6 @@
 using System;
+using FB2Toolbox.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FB2Toolbox;
-using System.Text;
 
 namespace FB2ToolboxUnitTest
 {
@@ -231,6 +230,23 @@ namespace FB2ToolboxUnitTest
 
                 // Assert
                 Assert.AreEqual("Book: Test Book", result);
+            }
+
+            [TestMethod]
+            [TestCategory("FileUtils")]
+            [Description("Test FileMetadata SubstitutePart with optional attribute that has value")]
+            public void FileMetadata_SubstitutePart_IncludesOptionalWithValue()
+            {
+                // Arrange
+                var metadata = new FileMetadata();
+                metadata.AddMetadata(DescriptionElements.Title, "Test Book");
+                metadata.AddMetadata(DescriptionElements.SequenceName, "Series One");
+
+                // Act
+                string result = metadata.SubstitutePart("Book: (Title) [SequenceName]");
+
+                // Assert
+                Assert.AreEqual("Book: Test Book Series One", result);
             }
 
             [TestMethod]

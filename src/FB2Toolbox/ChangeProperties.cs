@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using FB2Toolbox.Utilities;
 
 namespace FB2Toolbox
 {
     public partial class ChangeProperties : Form
     {
-        private bool init = false;
-        private bool searchMode = false;
+        private bool _init = false;
+        private bool _searchMode = false;
 
         public ChangeProperties(FileProperties filter = null)
         {
@@ -25,7 +26,7 @@ namespace FB2Toolbox
                 bookGenreText.Items.Add(el);
             }
 
-            init = true;
+            _init = true;
 
             if (filter != null)
             {
@@ -57,13 +58,13 @@ namespace FB2Toolbox
                 if (filter.TitleChange) bookTitleText.Text = filter.Title;
             }
 
-            searchMode = filter != null;
+            _searchMode = filter != null;
         }
         public void LoadFileProperties(FB2File info, int filesCount)
         {
             if (info != null)
             {
-                init = false;
+                _init = false;
                 authorFirstNameText.Text = info.BookAuthorFirstName;
                 authorMiddleNameText.Text = info.BookAuthorMiddleName;
                 authorLastNameText.Text = info.BookAuthorLastName;
@@ -77,8 +78,8 @@ namespace FB2Toolbox
                         break;
                     }
                 }
-                bookNumberText.Value = info.BookSequenceNr.HasValue ? info.BookSequenceNr.Value : 0;
-                init = true;
+                bookNumberText.Value = info.BookSequenceNr ?? 0;
+                _init = true;
             }
             bookTitleCheck.Enabled = filesCount <= 1;
             Text = "Изменить метаданные " + (filesCount > 1 ? string.Format("({0} файлов)", filesCount, System.Globalization.CultureInfo.CurrentCulture) : "(один файл)");
@@ -122,91 +123,91 @@ namespace FB2Toolbox
 
         private void authorFirstNameCheck_CheckedChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             authorFirstNameText.BackColor = authorFirstNameCheck.Checked ? System.Drawing.SystemColors.Window : System.Drawing.SystemColors.ControlLight;
         }
 
         private void authorMiddleNameCheck_CheckedChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             authorMiddleNameText.BackColor = authorMiddleNameCheck.Checked ? System.Drawing.SystemColors.Window : System.Drawing.SystemColors.ControlLight;
         }
 
         private void authorLastNameCheck_CheckedChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             authorLastNameText.BackColor = authorLastNameCheck.Checked ? System.Drawing.SystemColors.Window : System.Drawing.SystemColors.ControlLight;
         }
 
         private void bookSeriesCheck_CheckedChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             bookSeriesText.BackColor = bookSeriesCheck.Checked ? System.Drawing.SystemColors.Window : System.Drawing.SystemColors.ControlLight;
         }
 
         private void bookNumberCheck_CheckedChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             bookNumberText.BackColor = bookNumberCheck.Checked ? System.Drawing.SystemColors.Window : System.Drawing.SystemColors.ControlLight;
         }
 
         private void bookGenreCheck_CheckedChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             bookGenreText.BackColor = bookGenreCheck.Checked ? System.Drawing.SystemColors.Window : System.Drawing.SystemColors.ControlLight;
         }
 
         private void bookTitleCheck_CheckedChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             bookTitleText.BackColor = bookTitleCheck.Checked ? System.Drawing.SystemColors.Window : System.Drawing.SystemColors.ControlLight;
         }
 
         private void authorFirstNameText_TextChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             authorFirstNameCheck.Checked = true;
         }
 
         private void authorMiddleNameText_TextChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             authorMiddleNameCheck.Checked = true;
         }
 
         private void authorLastNameText_TextChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             authorLastNameCheck.Checked = true;
         }
 
         private void bookGenreText_TextChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             bookGenreCheck.Checked = true;
         }
 
         private void bookSeriesText_TextChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             bookSeriesCheck.Checked = true;
         }
 
         private void bookNumberText_ValueChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             bookNumberCheck.Checked = true;
         }
 
         private void bookTitleText_TextChanged(object sender, EventArgs e)
         {
-            if (!init) return;
+            if (!_init) return;
             bookTitleCheck.Checked = true;
         }
 
         private void ChangeProperties_Shown(object sender, EventArgs e)
         {
-            if (searchMode) bookTitleText.Focus();
+            if (_searchMode) bookTitleText.Focus();
         }
     }
 }

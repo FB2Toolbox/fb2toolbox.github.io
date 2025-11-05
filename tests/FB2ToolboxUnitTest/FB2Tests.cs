@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Text;
 using FB2Toolbox;
-using System.Text;
+using FB2Toolbox.Utilities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FB2ToolboxUnitTest
 {

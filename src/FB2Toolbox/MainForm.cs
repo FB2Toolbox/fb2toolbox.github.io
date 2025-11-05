@@ -8,14 +8,15 @@ using System.Diagnostics;
 using System.Xml;
 using System.Linq;
 using System.Collections;
+using FB2Toolbox.Utilities;
 
 namespace FB2Toolbox
 {
     public partial class MainForm : Form
     {
         #region Private
-        private bool inProgress_Value = false;
-        private FileProperties itemsFilter = null;
+        private bool _inProgress_Value = false;
+        private FileProperties _itemsFilter = null;
         private Dictionary<string, string> _loadedFileIDs = new Dictionary<string, string>();
         // private int _selectedCount = 0;
         private readonly List<ListViewItem> _itemsCache = new List<ListViewItem>();
@@ -91,23 +92,23 @@ namespace FB2Toolbox
         {
             get
             {
-                return inProgress_Value;
+                return _inProgress_Value;
             }
             set
             {
-                if (inProgress_Value != value)
+                if (_inProgress_Value != value)
                 {
-                    inProgress_Value = value;
-                    if (inProgress_Value)
+                    _inProgress_Value = value;
+                    if (_inProgress_Value)
                     {
                         statusCancelProgressLabel.Visible = true;
                         IsCancel = false;
                     }
-                    fileToolStripMenuItem.Enabled = !inProgress_Value;
-                    otherToolStripMenuItem.Enabled = !inProgress_Value;
-                    actionsToolStripMenuItem.Enabled = !inProgress_Value && (SelectedCount > 0);
-                    Cursor = inProgress_Value ? Cursors.WaitCursor : Cursors.Default;
-                    if (!inProgress_Value)
+                    fileToolStripMenuItem.Enabled = !_inProgress_Value;
+                    otherToolStripMenuItem.Enabled = !_inProgress_Value;
+                    actionsToolStripMenuItem.Enabled = !_inProgress_Value && (SelectedCount > 0);
+                    Cursor = _inProgress_Value ? Cursors.WaitCursor : Cursors.Default;
+                    if (!_inProgress_Value)
                     {
                         statusCancelProgressLabel.Visible = false;
                         AddMessageRN(Properties.Resources.Ready);
@@ -796,7 +797,7 @@ namespace FB2Toolbox
                     {
                         System.Diagnostics.Process.Start(fc.FileInformation.FullName);
                     }
-                    catch (Exception ex)
+                    catch
                     {
                     }
             }
@@ -1362,26 +1363,26 @@ namespace FB2Toolbox
 
         private void filterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (itemsFilter == null) itemsFilter = new FileProperties();
-            var dialog = new ChangeProperties(itemsFilter);
+            if (_itemsFilter == null) _itemsFilter = new FileProperties();
+            var dialog = new ChangeProperties(_itemsFilter);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                itemsFilter = dialog.GetFileProperties();
-                if (itemsFilter.AuthorFirstNameChange && itemsFilter.AuthorFirstName.Trim() == string.Empty) itemsFilter.AuthorFirstNameChange = false;
-                if (itemsFilter.AuthorMiddleNameChange && itemsFilter.AuthorMiddleName.Trim() == string.Empty) itemsFilter.AuthorMiddleNameChange = false;
-                if (itemsFilter.AuthorLastNameChange && itemsFilter.AuthorLastName.Trim() == string.Empty) itemsFilter.AuthorLastNameChange = false;
-                if (itemsFilter.GengeChange && itemsFilter.Genre == null || itemsFilter.GengeChange && itemsFilter.Genre.Trim() == string.Empty) itemsFilter.GengeChange = false;
-                if (itemsFilter.SeriesChange && itemsFilter.Series.Trim() == string.Empty) itemsFilter.SeriesChange = false;
-                if (itemsFilter.NumberChange && itemsFilter.Number.Trim() == string.Empty) itemsFilter.NumberChange = false;
-                if (itemsFilter.TitleChange && itemsFilter.Title.Trim() == string.Empty) itemsFilter.TitleChange= false;
+                _itemsFilter = dialog.GetFileProperties();
+                if (_itemsFilter.AuthorFirstNameChange && _itemsFilter.AuthorFirstName.Trim() == string.Empty) _itemsFilter.AuthorFirstNameChange = false;
+                if (_itemsFilter.AuthorMiddleNameChange && _itemsFilter.AuthorMiddleName.Trim() == string.Empty) _itemsFilter.AuthorMiddleNameChange = false;
+                if (_itemsFilter.AuthorLastNameChange && _itemsFilter.AuthorLastName.Trim() == string.Empty) _itemsFilter.AuthorLastNameChange = false;
+                if (_itemsFilter.GengeChange && _itemsFilter.Genre == null || _itemsFilter.GengeChange && _itemsFilter.Genre.Trim() == string.Empty) _itemsFilter.GengeChange = false;
+                if (_itemsFilter.SeriesChange && _itemsFilter.Series.Trim() == string.Empty) _itemsFilter.SeriesChange = false;
+                if (_itemsFilter.NumberChange && _itemsFilter.Number.Trim() == string.Empty) _itemsFilter.NumberChange = false;
+                if (_itemsFilter.TitleChange && _itemsFilter.Title.Trim() == string.Empty) _itemsFilter.TitleChange= false;
 
-                if (!itemsFilter.AuthorFirstNameChange
-                    && !itemsFilter.AuthorMiddleNameChange
-                    && !itemsFilter.AuthorLastNameChange
-                    && !itemsFilter.GengeChange
-                    && !itemsFilter.SeriesChange
-                    && !itemsFilter.NumberChange
-                    && !itemsFilter.TitleChange)
+                if (!_itemsFilter.AuthorFirstNameChange
+                    && !_itemsFilter.AuthorMiddleNameChange
+                    && !_itemsFilter.AuthorLastNameChange
+                    && !_itemsFilter.GengeChange
+                    && !_itemsFilter.SeriesChange
+                    && !_itemsFilter.NumberChange
+                    && !_itemsFilter.TitleChange)
                 {
                     clearFilterToolStripMenuItem_Click(sender, e);
                     return;
@@ -1393,39 +1394,39 @@ namespace FB2Toolbox
                     var result = false;
                     var result2 = false;
                     var first = true;
-                    if (itemsFilter.AuthorFirstNameChange)
+                    if (_itemsFilter.AuthorFirstNameChange)
                     {
-                        result = fb2.BookAuthorFirstName.ToLower().IndexOf(itemsFilter.AuthorFirstName.ToLower()) >= 0;
+                        result = fb2.BookAuthorFirstName.ToLower().IndexOf(_itemsFilter.AuthorFirstName.ToLower()) >= 0;
                         result2 = (first || result2) && result;
                         first = false;
                     }
-                    if (itemsFilter.AuthorMiddleNameChange)
+                    if (_itemsFilter.AuthorMiddleNameChange)
                     {
-                        result = fb2.BookAuthorMiddleName.ToLower().IndexOf(itemsFilter.AuthorMiddleName.ToLower()) >= 0;
+                        result = fb2.BookAuthorMiddleName.ToLower().IndexOf(_itemsFilter.AuthorMiddleName.ToLower()) >= 0;
                         result2 = (first || result2) && result;
                         first = false;
                     }
-                    if (itemsFilter.AuthorLastNameChange)
+                    if (_itemsFilter.AuthorLastNameChange)
                     {
-                        result = fb2.BookAuthorLastName.ToLower().IndexOf(itemsFilter.AuthorLastName.ToLower()) >= 0;
+                        result = fb2.BookAuthorLastName.ToLower().IndexOf(_itemsFilter.AuthorLastName.ToLower()) >= 0;
                         result2 = (first || result2) && result;
                         first = false;
                     }
-                    if (itemsFilter.GengeChange)
+                    if (_itemsFilter.GengeChange)
                     {
-                        result = fb2.BookGenre.ToLower() == itemsFilter.GenreTitle.ToLower();
+                        result = fb2.BookGenre.ToLower() == _itemsFilter.GenreTitle.ToLower();
                         result2 = (first || result2) && result;
                         first = false;
                     }
-                    if (itemsFilter.SeriesChange)
+                    if (_itemsFilter.SeriesChange)
                     {
-                        result = fb2.BookSequenceName.ToLower().IndexOf(itemsFilter.Series.ToLower()) >= 0;
+                        result = fb2.BookSequenceName.ToLower().IndexOf(_itemsFilter.Series.ToLower()) >= 0;
                         result2 = (first || result2) && result;
                         first = false;
                     }
-                    if (itemsFilter.TitleChange)
+                    if (_itemsFilter.TitleChange)
                     {
-                        result = fb2.BookTitle.ToLower().IndexOf(itemsFilter.Title.ToLower()) >= 0;
+                        result = fb2.BookTitle.ToLower().IndexOf(_itemsFilter.Title.ToLower()) >= 0;
                         result2 = (first || result2) && result;
                         first = false;
                     }
@@ -1456,7 +1457,7 @@ namespace FB2Toolbox
             //SelectedCount = 0;
             UpdateStatus();
             filesView.EndUpdate();
-            itemsFilter = null;
+            _itemsFilter = null;
             filterToolStripMenuItem.Checked = false;
         }
     }

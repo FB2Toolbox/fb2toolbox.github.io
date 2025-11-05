@@ -1,6 +1,6 @@
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FB2Toolbox.Entities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FB2ToolboxUnitTest
 {
@@ -49,13 +49,13 @@ namespace FB2ToolboxUnitTest
         public void FB2Book_CompareTo_ComparesByFirstNameWhenLastNameEqual()
         {
             // Arrange
-            var book1 = new FB2Book 
-            { 
+            var book1 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan"
             };
-            var book2 = new FB2Book 
-            { 
+            var book2 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Petr"
             };
@@ -73,14 +73,14 @@ namespace FB2ToolboxUnitTest
         public void FB2Book_CompareTo_ComparesBySequenceNameWhenAuthorsEqual()
         {
             // Arrange
-            var book1 = new FB2Book 
-            { 
+            var book1 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan",
                 BookSequenceName = "Series A"
             };
-            var book2 = new FB2Book 
-            { 
+            var book2 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan",
                 BookSequenceName = "Series B"
@@ -99,15 +99,15 @@ namespace FB2ToolboxUnitTest
         public void FB2Book_CompareTo_ComparesBySequenceNrWhenOthersEqual()
         {
             // Arrange
-            var book1 = new FB2Book 
-            { 
+            var book1 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan",
                 BookSequenceName = "Series A",
                 BookSequenceNr = 1
             };
-            var book2 = new FB2Book 
-            { 
+            var book2 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan",
                 BookSequenceName = "Series A",
@@ -127,16 +127,16 @@ namespace FB2ToolboxUnitTest
         public void FB2Book_CompareTo_ComparesByTitleWhenAllElseEqual()
         {
             // Arrange
-            var book1 = new FB2Book 
-            { 
+            var book1 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan",
                 BookSequenceName = "Series A",
                 BookSequenceNr = 1,
                 BookTitle = "Book A"
             };
-            var book2 = new FB2Book 
-            { 
+            var book2 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan",
                 BookSequenceName = "Series A",
@@ -157,16 +157,16 @@ namespace FB2ToolboxUnitTest
         public void FB2Book_CompareTo_ReturnsZeroForEqualBooks()
         {
             // Arrange
-            var book1 = new FB2Book 
-            { 
+            var book1 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan",
                 BookSequenceName = "Series A",
                 BookSequenceNr = 1,
                 BookTitle = "Book A"
             };
-            var book2 = new FB2Book 
-            { 
+            var book2 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan",
                 BookSequenceName = "Series A",
@@ -187,15 +187,15 @@ namespace FB2ToolboxUnitTest
         public void FB2Book_CompareTo_HandlesNullSequenceNumbers()
         {
             // Arrange
-            var book1 = new FB2Book 
-            { 
+            var book1 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan",
                 BookSequenceName = "Series A",
                 BookSequenceNr = null
             };
-            var book2 = new FB2Book 
-            { 
+            var book2 = new FB2Book
+            {
                 BookAuthorLastName = "Ivanov",
                 BookAuthorFirstName = "Ivan",
                 BookSequenceName = "Series A",
