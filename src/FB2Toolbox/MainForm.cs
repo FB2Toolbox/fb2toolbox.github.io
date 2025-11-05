@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using System.Xml;
+using System.Linq;
+using System.Collections;
 
 namespace FB2Toolbox
 {
@@ -13,9 +15,13 @@ namespace FB2Toolbox
     {
         #region Private
         private bool inProgress_Value = false;
+        private FileProperties itemsFilter = null;
         private Dictionary<string, string> _loadedFileIDs = new Dictionary<string, string>();
-        private int _selectedCount = 0;
+        // private int _selectedCount = 0;
+        private readonly List<ListViewItem> _itemsCache = new List<ListViewItem>();
         #endregion
+
+        private string _ver;
         public MainForm()
         {
             InitializeComponent();
@@ -23,11 +29,41 @@ namespace FB2Toolbox
 
             IsCancel = false;
             InProgress = false;
+
             Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            if (v.Build > 0)
-                Text = string.Format("{0} (v{1}.{2}.{3})", Text, v.Major, v.Minor, v.Build);
-            else
-                Text = string.Format("{0} (v{1}.{2})", Text, v.Major, v.Minor);
+            _ver = String.Format("(v{0}.{1}{2})", v.Major, v.Minor, v.Build > 0 ? "." + v.Build : "");
+            SetApplicationTitle();
+        }
+        private string _rootPath = "";
+        private void SetApplicationTitle(string path = "")
+        {
+            if (path != String.Empty)
+            {
+                if (_rootPath == "")
+                    _rootPath = path;
+                else {
+                    if (_rootPath.Length > path.Length || path.Substring(0, _rootPath.Length) != _rootPath)
+                    {
+                        var fPath = path.Split(Path.DirectorySeparatorChar);
+                        var rPath = _rootPath.Split(Path.DirectorySeparatorChar);
+                        var result = new List<string>();
+                        var len = fPath.Length > rPath.Length ? rPath.Length : fPath.Length;
+                        for (var i = 0; i < len; i++)
+                        {
+                            if (fPath[i] == rPath[i])
+                                result.Add(fPath[i]);
+                            else
+                                break;
+                        }
+                        _rootPath = String.Join(Path.DirectorySeparatorChar.ToString(), result.ToArray());
+                    }
+                }
+            } else
+            {
+                _rootPath = "";
+            }
+            
+            Text = string.Format("{0} {1}{2}", Application.ProductName, _ver, _rootPath != "" ? ": " + _rootPath : "" );
         }
         private Dictionary<string, string> LoadedFileIDs
         {
@@ -36,16 +72,18 @@ namespace FB2Toolbox
                 return _loadedFileIDs;
             }
         }
+        private List<ListViewItem> ItemsCache
+        {
+            get
+            {
+                return _itemsCache;
+            }
+        }
         private int SelectedCount
         {
             get
             {
-                return _selectedCount;
-            }
-            set
-            {
-                _selectedCount = value;
-                CheckMenus();
+                return filesView.CheckedItems.Count;
             }
         }
         private bool IsCancel { get; set; }
@@ -77,7 +115,115 @@ namespace FB2Toolbox
                 }
             }
         }
-        private List<FB2File> ReadListOfFiles(string[] fileNames)
+        #region File menu events
+
+        private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog.InitialDirectory = Properties.Settings.Default.DefaultAddFiltesPath;
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Properties.Settings.Default.DefaultAddFiltesPath = openFileDialog.InitialDirectory;
+                Properties.Settings.Default.Save();
+                AddFiles(openFileDialog.FileNames);
+            }
+        }
+
+        private void addFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog.SelectedPath = Properties.Settings.Default.DefaultAddFolderPath;
+            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                bool recursive = true;
+                ToolStripMenuItem item = sender as ToolStripMenuItem;
+                if (item != null)
+                    recursive = Convert.ToBoolean(item.Tag);
+
+                Properties.Settings.Default.DefaultAddFolderPath = folderBrowserDialog.SelectedPath;
+                Properties.Settings.Default.Save();
+                AddDir(folderBrowserDialog.SelectedPath, recursive);
+            }
+        }
+
+        private void AddFiles(string[] files)
+        {
+            InProgress = true;
+            var fs = ImportFiles(files);
+            AddItemsToList(fs);
+            InProgress = false;
+            UpdateStatus();
+        }
+
+        private void AddDir(string dir, bool recursive)
+        {
+            InProgress = true;
+            messagesTextBox.Enabled = false;
+            var fs = ReadFolder(dir, recursive);
+            if (fs != null && fs.Count > 0) AddItemsToList(fs);
+            messagesTextBox.Enabled = true;
+            InProgress = false;
+            UpdateStatus();
+        }
+
+        private List<FB2File> ReadFolder(string folder, bool recursive)
+        {
+            if (IsCancel || !Directory.Exists(folder))
+                return null;
+
+            var result = new List<FB2File>();
+            var dirInfo = new DirectoryInfo(folder);
+
+            UpdateStatus(String.Format(Properties.Resources.ProgressScanFolder, dirInfo.FullName));
+            try
+            {
+                FileInfo[] files = dirInfo.GetFiles("*" + FB2Config.Current.FB2Extension);
+                FileInfo[] zipFiles = dirInfo.GetFiles("*" + FB2Config.Current.FB2ZIPExtension);
+                if (files.Length > 0)
+                {
+                    List<string> list = new List<string>();
+                    foreach (FileInfo fi in files)
+                    {
+                        list.Add(fi.FullName);
+                    }
+                    var fclist = ImportFiles(list.ToArray());
+                    result.AddRange(fclist);
+                }
+                
+                if (IsCancel)
+                    return null;
+
+                if (zipFiles.Length > 0)
+                {
+                    List<string> list = new List<string>();
+                    foreach (FileInfo fi in zipFiles)
+                    {
+                        list.Add(fi.FullName);
+                    }
+                    var fclist = ImportFiles(list.ToArray());
+                    result.AddRange(fclist);
+                }
+                
+                if (IsCancel)
+                    return null;
+
+                if (recursive)
+                {
+                    DirectoryInfo[] directories = dirInfo.GetDirectories();
+                    foreach (DirectoryInfo di in directories)
+                    {
+                        List<FB2File> r = ReadFolder(di.FullName, recursive);
+                        if (r != null && r.Count > 0) result.AddRange(r);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AddErrorRN(ex.Message);
+            }
+
+            return result;
+        }
+
+        private List<FB2File> ImportFiles(string[] fileNames)
         {
             List<FB2File> containers = new List<FB2File>();
             foreach (string fileName in fileNames)
@@ -99,20 +245,102 @@ namespace FB2Toolbox
             }
             return containers;
         }
-        private void addFilesToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private bool _dragStarted = false;
+        private int _dragX = -1;
+        private int _dragY = -1;
+        private void filesView_MouseDown(object sender, MouseEventArgs e)
         {
-            openFileDialog.InitialDirectory = Properties.Settings.Default.DefaultAddFiltesPath;
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            _dragX = MousePosition.X;
+            _dragY = MousePosition.Y;
+        }
+
+        private void filesView_MouseUp(object sender, MouseEventArgs e)
+        {
+            _dragStarted = false;
+            _dragX = -1;
+            _dragY = -1;
+            Cursor = Cursors.Default;
+        }
+
+        private void filesView_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_dragX < 0 || _dragY < 0)
+                return;
+
+            if (!_dragStarted && Math.Sqrt((_dragX - MousePosition.X) * (_dragX - MousePosition.X) + (_dragY - MousePosition.Y) * (_dragY - MousePosition.Y)) > 100)
             {
-                InProgress = true;
-                Properties.Settings.Default.DefaultAddFiltesPath = openFileDialog.InitialDirectory;
-                Properties.Settings.Default.Save();
-                var _listOfFiles = ReadListOfFiles(openFileDialog.FileNames);
-                AddItemsToList(_listOfFiles);
-                InProgress = false;
-                UpdateStatus();
+                _dragStarted = true;
+                StartDragFiles();
             }
         }
+
+        private void filesView_MouseLeave(object sender, EventArgs e)
+        {
+            if (!_dragStarted)
+                return;
+
+            _dragStarted = true;
+            StartDragFiles();
+        }
+
+        private void StartDragFiles()
+        {
+            var items = filesView.CheckedItems.Count > 0 ? filesView.CheckedItems : (filesView.SelectedItems.Count > 0 ? (IList)filesView.SelectedItems : null);
+            if (items == null || items.Count == 0)
+            {
+                return;
+            }
+
+            var files = new List<string>();
+            foreach (ListViewItem item in items)
+            {
+                files.Add(((FB2File)item.Tag).FileInformation.FullName);
+            }
+
+            this.DoDragDrop(new DataObject(DataFormats.FileDrop, files.ToArray()), DragDropEffects.Copy);
+
+        }
+
+        private void filesView_DragEnter(object sender, DragEventArgs e)
+        {
+            if (!_dragStarted && e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void filesView_DragDrop(object sender, DragEventArgs e)
+        {
+            if (_dragStarted)
+                return;
+
+            var _list = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var _files = new List<string>();
+            var _dirs = new List<string>();
+            if (filesView.Items.Count > 0 && MessageBox.Show(Properties.Resources.ConfirmationClearFileList, Properties.Resources.ConfirmationCaption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.Yes)
+                ClearLists();
+            foreach (var fi in _list)
+            {
+                if (File.Exists(fi)) _files.Add(fi);
+                else if (Directory.Exists(fi)) _dirs.Add(fi);
+            }
+            InProgress = true;
+            if (_files.Count > 0)
+            {
+                AddItemsToList(ImportFiles(_files.ToArray()));
+            }
+            if (_dirs.Count > 0)
+                foreach (var dir in _dirs)
+                {
+                    var fs = ReadFolder(dir, true);
+                    if (fs != null && fs.Count > 0) AddItemsToList(fs);
+                    if (IsCancel) break;
+                }
+            UpdateStatus();
+            InProgress = false;
+        }
+
+        #endregion
+
         private void AddErrorRN(string message)
         {
             System.Drawing.Color prevColor = messagesTextBox.SelectionColor;
@@ -183,7 +411,7 @@ namespace FB2Toolbox
         private void AddItemsToList(List<FB2File> list)
         {
             UpdateStatus(String.Format(Properties.Resources.ParseFileListLoad, list.Count));
-            list.Sort();
+            // list.Sort();
             filesView.BeginUpdate();
             foreach (FB2File fc in list)
             {
@@ -201,9 +429,12 @@ namespace FB2Toolbox
                     if (!fc.IsValid)
                         AddMessageRN(lvi.ToolTipText);
                     filesView.Items.Add(lvi);
+                    ItemsCache.Add(lvi);
+                    AddMessage(String.Format(Properties.Resources.ProgressFileLoaded + "\r\n", key));
+                    SetApplicationTitle(fc.FileInformation.FullName);
                 }
             }
-            filesView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            // filesView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             filesView.EndUpdate();
             CheckMenus();
         }
@@ -211,16 +442,17 @@ namespace FB2Toolbox
         {
             filesView.BeginUpdate();
             filesView.Items.Clear();
+            ItemsCache.Clear();
             filesView.Groups.Clear();
             filesView.EndUpdate();
             messagesTextBox.Clear();
             LoadedFileIDs.Clear();
-            SelectedCount = 0;
             UpdateStatus();
+            SetApplicationTitle();
         }
         private void CheckMenus()
         {
-            actionsToolStripMenuItem.Enabled = _selectedCount > 0;
+            actionsToolStripMenuItem.Enabled = SelectedCount > 0;
             clearFilesListMenuItem.Enabled = filesView.Items.Count > 0;
             checkAllToolStripMenuItem.Enabled = clearFilesListMenuItem.Enabled;
             uncheckAllToolStripMenuItem.Enabled = clearFilesListMenuItem.Enabled;
@@ -230,77 +462,12 @@ namespace FB2Toolbox
             if (MessageBox.Show(Properties.Resources.ConfirmationClearFileList, Properties.Resources.ConfirmationCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 ClearLists();
         }
-        private void AddFolder(DirectoryInfo folder, List<FB2File> containers, bool recursive)
-        {
-            if (IsCancel)
-                return;
-            UpdateStatus(String.Format(Properties.Resources.ProgressScanFolder, folder.FullName));
-            try
-            {
-                FileInfo[] files = folder.GetFiles("*" + FB2Config.Current.FB2Extension);
-                FileInfo[] zipFiles = folder.GetFiles("*" + FB2Config.Current.FB2ZIPExtension);
-                if (files.Length > 0)
-                {
-                    List<string> list = new List<string>();
-                    foreach (FileInfo fi in files)
-                    {
-                        list.Add(fi.FullName);
-                    }
-                    var fclist = ReadListOfFiles(list.ToArray());
-                    containers.AddRange(fclist);
-                }
-                if (IsCancel)
-                    return;
-                if (zipFiles.Length > 0)
-                {
-                    List<string> list = new List<string>();
-                    foreach (FileInfo fi in zipFiles)
-                    {
-                        list.Add(fi.FullName);
-                    }
-                    var fclist = ReadListOfFiles(list.ToArray());
-                    containers.AddRange(fclist);
-                }
-                if (IsCancel)
-                    return;
-                if (recursive)
-                {
-                    DirectoryInfo[] folders = folder.GetDirectories();
-                    foreach (DirectoryInfo di in folders)
-                    {
-                        AddFolder(di, containers, recursive);
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                AddErrorRN(ex.Message);
-            }
-        }
         private void UpdateStatus()
         {
             statusLabel.Text = String.Empty;
             statusSelectedFilesLabel.Text = String.Format(Properties.Resources.StatusBarFilesCount, SelectedCount, filesView.Items.Count);
         }
-        private void addFolderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            folderBrowserDialog.SelectedPath = Properties.Settings.Default.DefaultAddFolderPath;
-            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                bool recursive = true;
-                ToolStripMenuItem item = sender as ToolStripMenuItem;
-                if (item != null)
-                    recursive = Convert.ToBoolean(item.Tag);
-                InProgress = true;
-                Properties.Settings.Default.DefaultAddFolderPath = folderBrowserDialog.SelectedPath;
-                Properties.Settings.Default.Save();
-                List<FB2File> list = new List<FB2File>();
-                AddFolder(new DirectoryInfo(folderBrowserDialog.SelectedPath), list, recursive);
-                AddItemsToList(list);
-                InProgress = false;
-                UpdateStatus();
-            }
-        }
+        
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = InProgress;
@@ -480,12 +647,32 @@ namespace FB2Toolbox
                         return;
                     }
                 }
+
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.CreateNoWindow = command.CreateNoWindow;
                 startInfo.FileName = command.FileName;
                 startInfo.UseShellExecute = false;
                 commandString = String.Format(command.Arguments, fc.FileInformation.FullName);
                 startInfo.Arguments = commandString;
+
+                if (string.IsNullOrEmpty(startInfo.FileName) || startInfo.FileName.Trim() == "")
+                {
+                    AddMessageRN(String.Format(Properties.Resources.ExecuteCommandErrorEmpty, command.FileName));
+                    return;
+                }
+
+                if (!startInfo.FileName.StartsWith("/") && startInfo.FileName.Substring(1, 2) != ":\\")
+                {
+                    var enviromentPath = System.Environment.GetEnvironmentVariable("PATH");
+                    var paths = enviromentPath.Split(';');
+                    var exePath = paths.Select(x => Path.Combine(x, startInfo.FileName))
+                                       .Where(x => File.Exists(x))
+                                       .FirstOrDefault();
+                    if (exePath != null)
+                    {
+                        startInfo.FileName = exePath;
+                    }
+                }
 
                 AddMessageRN(String.Format(Properties.Resources.ExecuteCommand, command.FileName, commandString));
                 using (Process exeProcess = Process.Start(startInfo))
@@ -578,16 +765,16 @@ namespace FB2Toolbox
             }
             ListViewItem item = filesView.Items[e.Index];
             FB2File fb2 = item.Tag as FB2File;
-            if (e.NewValue == CheckState.Unchecked)
-                SelectedCount--;
             if (!fb2.IsValid)
                 e.NewValue = CheckState.Unchecked;
-            if (e.NewValue == CheckState.Checked)
-                SelectedCount++;
         }
         private void filesView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            UpdateStatus();
+            if (!InProgress)
+            {
+                UpdateStatus();
+                CheckMenus();
+            }
         }
         private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -609,7 +796,7 @@ namespace FB2Toolbox
                     {
                         System.Diagnostics.Process.Start(fc.FileInformation.FullName);
                     }
-                    catch
+                    catch (Exception ex)
                     {
                     }
             }
@@ -991,47 +1178,58 @@ namespace FB2Toolbox
         private string GetGroupName(FB2File item, int typeGroup = 0)
         {
             string seq = string.Empty;
-            if (typeGroup == 0)
+            switch(typeGroup)
             {
-                seq = String.IsNullOrEmpty(item.BookSequenceName) ? Properties.Resources.DisplayNoSerie : item.BookSequenceName;
-                seq = String.IsNullOrEmpty(item.BookAuthorLastName) ? seq : item.BookAuthorLastName + ": " + seq;
-                return seq;
-            }
-            else
-                if (typeGroup == 1)
-                {
+                // Фамилия Имя
+                case 5:
+                    seq = String.IsNullOrEmpty(item.BookSequenceName) ? Properties.Resources.DisplayNoSerie : item.BookSequenceName;
+                    seq = String.IsNullOrEmpty(item.BookAuthorLastName) ? seq : item.BookAuthorLastName + (String.IsNullOrEmpty(item.BookAuthorFirstName) ? " "+ item.BookAuthorFirstName : "");
+
+                    return seq;
+                // Фамилия: Серия
+                case 0:
+                    seq = String.IsNullOrEmpty(item.BookSequenceName) ? Properties.Resources.DisplayNoSerie : item.BookSequenceName;
+                    seq = String.IsNullOrEmpty(item.BookAuthorLastName) ? seq : item.BookAuthorLastName + ": " + seq;
+                    return seq;
+                // Фамилия: Название
+                case 1:
                     seq = item.BookTitle;
                     seq = String.IsNullOrEmpty(item.BookAuthorLastName) ? seq : item.BookAuthorLastName + ": " + seq;
                     return seq;
-                }
-                else
-                    if (typeGroup == 2)
-                    {
-                        seq = String.IsNullOrEmpty(item.BookSequenceName) ? Properties.Resources.DisplayNoSerie : item.BookSequenceName;
-                        seq = String.IsNullOrEmpty(item.BookAuthorLastName) ? seq : seq + ": " + item.BookAuthorLastName;
-                        return seq;
-                    }
-                    else
-                        if (typeGroup == 3)
-                        {
-                            seq = String.IsNullOrEmpty(item.BookSequenceName) ? Properties.Resources.DisplayNoSerie : item.BookSequenceName;
-                            seq = seq + ": " + item.BookTitle;
-                            return seq;
-                        }
+                // Серия
+                case 4:
+                    seq = String.IsNullOrEmpty(item.BookSequenceName) ? Properties.Resources.DisplayNoSerie : item.BookSequenceName;
+                    return seq;
+                // Серия: Фамилия
+                case 2:
+                    seq = String.IsNullOrEmpty(item.BookSequenceName) ? Properties.Resources.DisplayNoSerie : item.BookSequenceName;
+                    seq = String.IsNullOrEmpty(item.BookAuthorLastName) ? seq : seq + ": " + item.BookAuthorLastName;
+                    return seq;
+                // Серия: Название
+                case 3:
+                    seq = String.IsNullOrEmpty(item.BookSequenceName) ? Properties.Resources.DisplayNoSerie : item.BookSequenceName;
+                    seq = seq + ": " + item.BookTitle;
+                    return seq;
+            }
             return seq;
         }
 
         private int GetGroupType()
         {
             object o = 0;
-            if (view1ToolStripMenuItem.CheckState == CheckState.Checked)
-                o = view1ToolStripMenuItem.Tag;
-            if (view2ToolStripMenuItem.CheckState == CheckState.Checked)
-                o = view2ToolStripMenuItem.Tag;
-            if (view3ToolStripMenuItem.CheckState == CheckState.Checked)
-                o = view3ToolStripMenuItem.Tag;
-            if (view4ToolStripMenuItem.CheckState == CheckState.Checked)
-                o = view4ToolStripMenuItem.Tag;
+            List<ToolStripMenuItem> toolItems = new List<ToolStripMenuItem>() {
+                view1ToolStripMenuItem,
+                view2ToolStripMenuItem,
+                view3ToolStripMenuItem,
+                view4ToolStripMenuItem,
+                view5ToolStripMenuItem,
+                view6ToolStripMenuItem
+            };
+            foreach (ToolStripMenuItem toolItem in toolItems)
+            {
+                if (toolItem.CheckState == CheckState.Checked)
+                    o = toolItem.Tag;
+            }
             return Convert.ToInt32(o);
         }
 
@@ -1049,28 +1247,217 @@ namespace FB2Toolbox
         private void view1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var groupType = Convert.ToInt32((sender as ToolStripMenuItem).Tag);
-
-            view1ToolStripMenuItem.CheckState = CheckState.Unchecked;
-            view2ToolStripMenuItem.CheckState = CheckState.Unchecked;
-            view3ToolStripMenuItem.CheckState = CheckState.Unchecked;
-            view4ToolStripMenuItem.CheckState = CheckState.Unchecked;
-            if (Convert.ToInt32(view1ToolStripMenuItem.Tag) == groupType)
-                view1ToolStripMenuItem.CheckState = CheckState.Checked;
-            if (Convert.ToInt32(view2ToolStripMenuItem.Tag) == groupType)
-                view2ToolStripMenuItem.CheckState = CheckState.Checked;
-            if (Convert.ToInt32(view3ToolStripMenuItem.Tag) == groupType)
-                view3ToolStripMenuItem.CheckState = CheckState.Checked;
-            if (Convert.ToInt32(view4ToolStripMenuItem.Tag) == groupType)
-                view4ToolStripMenuItem.CheckState = CheckState.Checked;
-
+            List<ToolStripMenuItem> toolItems = new List<ToolStripMenuItem>() { 
+                view1ToolStripMenuItem, 
+                view2ToolStripMenuItem, 
+                view3ToolStripMenuItem, 
+                view4ToolStripMenuItem, 
+                view5ToolStripMenuItem, 
+                view6ToolStripMenuItem
+            };
+            foreach (ToolStripMenuItem toolItem in toolItems)
+            {
+                toolItem.CheckState = CheckState.Unchecked;
+                if (Convert.ToInt32(toolItem.Tag) == groupType)
+                    toolItem.CheckState = CheckState.Checked;
+            }
             filesView.BeginUpdate();
             filesView.Groups.Clear();
             foreach (ListViewItem item in filesView.Items)
             {
                 UpdateGroup(item);
             }
-
             filesView.EndUpdate();
+        }
+
+        private void deleteSingleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (filesView.FocusedItem != null)
+            {
+                FB2File fc = filesView.FocusedItem.Tag as FB2File;
+                if (MessageBox.Show(String.Format(Properties.Resources.ConfirmationDeleteFile, fc.FileInformation.Name), Properties.Resources.ConfirmationCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.No)
+                    return;
+                DeleteFile(filesView.FocusedItem);
+            }
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CheckCheckedFilesItems();
+            if (MessageBox.Show(String.Format(Properties.Resources.ConfirmationDelete, SelectedCount), Properties.Resources.ConfirmationCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            {
+                InProgress = true;
+                foreach (ListViewItem item in filesView.CheckedItems)
+                {
+                    DeleteFile(item);
+                    if (CheckCancel())
+                        break;
+                }
+                InProgress = false;
+            }
+        }
+
+        private void CheckCheckedFilesItems()
+        {
+            if (filesView.CheckedItems.Count == 0 && filesView.SelectedItems.Count > 0)
+            {
+                foreach ( ListViewItem item in filesView.SelectedItems)
+                {
+                    item.Checked = true;
+                }
+            }
+        }
+
+        private void DeleteFile(ListViewItem item)
+        {
+            FB2File fc = item.Tag as FB2File;
+            if (fc != null)
+            {
+                File.Delete(fc.FileInformation.FullName);
+                string path = Path.GetDirectoryName(fc.FileInformation.FullName);
+                FB2File.RemoveFolder(new DirectoryInfo(path));
+                if (!File.Exists(fc.FileInformation.FullName))
+                {
+                    filesView.Items.Remove(item);
+                    ItemsCache.Remove(item);
+                    LoadedFileIDs.Remove(fc.FileInformation.FullName);
+                    CheckMenus();
+                }
+            }
+        }
+
+        private void removeSingleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (filesView.FocusedItem != null)
+            {
+                FB2File fc = filesView.FocusedItem.Tag as FB2File;
+                if (MessageBox.Show(String.Format(Properties.Resources.ConfirmationRemoveFile, fc.FileInformation.Name), Properties.Resources.ConfirmationCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.No)
+                    return;
+                if (fc != null)
+                {
+                    filesView.Items.Remove(filesView.FocusedItem);
+                    ItemsCache.Remove(filesView.FocusedItem);
+                    LoadedFileIDs.Remove(fc.FileInformation.FullName);
+                }
+                CheckMenus();
+            }
+        }
+
+        private void removeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show(String.Format(Properties.Resources.ConfirmationRemove, SelectedCount), Properties.Resources.ConfirmationCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            {
+                InProgress = true;
+                foreach (ListViewItem item in filesView.CheckedItems)
+                {
+                    FB2File fc = item.Tag as FB2File;
+                    filesView.Items.Remove(item);
+                    ItemsCache.Remove(item);
+                    LoadedFileIDs.Remove(fc.FileInformation.FullName);
+                    CheckMenus();
+                }
+                InProgress = false;
+            }
+        }
+
+        private void filterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (itemsFilter == null) itemsFilter = new FileProperties();
+            var dialog = new ChangeProperties(itemsFilter);
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                itemsFilter = dialog.GetFileProperties();
+                if (itemsFilter.AuthorFirstNameChange && itemsFilter.AuthorFirstName.Trim() == string.Empty) itemsFilter.AuthorFirstNameChange = false;
+                if (itemsFilter.AuthorMiddleNameChange && itemsFilter.AuthorMiddleName.Trim() == string.Empty) itemsFilter.AuthorMiddleNameChange = false;
+                if (itemsFilter.AuthorLastNameChange && itemsFilter.AuthorLastName.Trim() == string.Empty) itemsFilter.AuthorLastNameChange = false;
+                if (itemsFilter.GengeChange && itemsFilter.Genre == null || itemsFilter.GengeChange && itemsFilter.Genre.Trim() == string.Empty) itemsFilter.GengeChange = false;
+                if (itemsFilter.SeriesChange && itemsFilter.Series.Trim() == string.Empty) itemsFilter.SeriesChange = false;
+                if (itemsFilter.NumberChange && itemsFilter.Number.Trim() == string.Empty) itemsFilter.NumberChange = false;
+                if (itemsFilter.TitleChange && itemsFilter.Title.Trim() == string.Empty) itemsFilter.TitleChange= false;
+
+                if (!itemsFilter.AuthorFirstNameChange
+                    && !itemsFilter.AuthorMiddleNameChange
+                    && !itemsFilter.AuthorLastNameChange
+                    && !itemsFilter.GengeChange
+                    && !itemsFilter.SeriesChange
+                    && !itemsFilter.NumberChange
+                    && !itemsFilter.TitleChange)
+                {
+                    clearFilterToolStripMenuItem_Click(sender, e);
+                    return;
+                }
+
+                var filteredItems = ItemsCache.Where(item =>
+                {
+                    var fb2 = item.Tag as FB2File;
+                    var result = false;
+                    var result2 = false;
+                    var first = true;
+                    if (itemsFilter.AuthorFirstNameChange)
+                    {
+                        result = fb2.BookAuthorFirstName.ToLower().IndexOf(itemsFilter.AuthorFirstName.ToLower()) >= 0;
+                        result2 = (first || result2) && result;
+                        first = false;
+                    }
+                    if (itemsFilter.AuthorMiddleNameChange)
+                    {
+                        result = fb2.BookAuthorMiddleName.ToLower().IndexOf(itemsFilter.AuthorMiddleName.ToLower()) >= 0;
+                        result2 = (first || result2) && result;
+                        first = false;
+                    }
+                    if (itemsFilter.AuthorLastNameChange)
+                    {
+                        result = fb2.BookAuthorLastName.ToLower().IndexOf(itemsFilter.AuthorLastName.ToLower()) >= 0;
+                        result2 = (first || result2) && result;
+                        first = false;
+                    }
+                    if (itemsFilter.GengeChange)
+                    {
+                        result = fb2.BookGenre.ToLower() == itemsFilter.GenreTitle.ToLower();
+                        result2 = (first || result2) && result;
+                        first = false;
+                    }
+                    if (itemsFilter.SeriesChange)
+                    {
+                        result = fb2.BookSequenceName.ToLower().IndexOf(itemsFilter.Series.ToLower()) >= 0;
+                        result2 = (first || result2) && result;
+                        first = false;
+                    }
+                    if (itemsFilter.TitleChange)
+                    {
+                        result = fb2.BookTitle.ToLower().IndexOf(itemsFilter.Title.ToLower()) >= 0;
+                        result2 = (first || result2) && result;
+                        first = false;
+                    }
+                    return result2;
+                });
+                filesView.BeginUpdate();
+                var items = filteredItems.ToArray();
+                filesView.Items.Clear();
+                filesView.Groups.Clear();
+                if (items.Length > 0) filesView.Items.AddRange(items);
+                foreach (ListViewItem item in filesView.Items) UpdateGroup(item);
+                UpdateStatus();
+                filesView.EndUpdate();
+                filterToolStripMenuItem.Checked = true;
+            }
+        }
+
+        private void clearFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            filesView.BeginUpdate();
+            filesView.Items.Clear();
+            filesView.Groups.Clear();
+            filesView.Items.AddRange(ItemsCache.ToArray());
+            foreach (ListViewItem item in filesView.Items) {
+                UpdateGroup(item);
+                //item.Checked = false;
+            }
+            //SelectedCount = 0;
+            UpdateStatus();
+            filesView.EndUpdate();
+            itemsFilter = null;
+            filterToolStripMenuItem.Checked = false;
         }
     }
 }

@@ -81,7 +81,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(9, 75);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(70, 17);
+            this.label3.Size = new System.Drawing.Size(55, 13);
             this.label3.TabIndex = 8;
             this.label3.Text = "&Фамилия:";
             // 
@@ -90,7 +90,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(9, 49);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 17);
+            this.label2.Size = new System.Drawing.Size(60, 13);
             this.label2.TabIndex = 7;
             this.label2.Text = "&Отчество:";
             // 
@@ -99,63 +99,66 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 23);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 17);
+            this.label1.Size = new System.Drawing.Size(30, 13);
             this.label1.TabIndex = 6;
             this.label1.Text = "&Имя:";
             // 
             // authorLastNameText
             // 
+            this.authorLastNameText.BackColor = System.Drawing.SystemColors.ControlLight;
             this.authorLastNameText.Location = new System.Drawing.Point(117, 72);
             this.authorLastNameText.MaxLength = 150;
             this.authorLastNameText.Name = "authorLastNameText";
-            this.authorLastNameText.ReadOnly = true;
-            this.authorLastNameText.Size = new System.Drawing.Size(279, 24);
+            this.authorLastNameText.Size = new System.Drawing.Size(279, 21);
             this.authorLastNameText.TabIndex = 5;
+            this.authorLastNameText.TextChanged += new System.EventHandler(this.authorLastNameText_TextChanged);
             // 
             // authorLastNameCheck
             // 
             this.authorLastNameCheck.AutoSize = true;
             this.authorLastNameCheck.Location = new System.Drawing.Point(93, 75);
             this.authorLastNameCheck.Name = "authorLastNameCheck";
-            this.authorLastNameCheck.Size = new System.Drawing.Size(18, 17);
+            this.authorLastNameCheck.Size = new System.Drawing.Size(15, 14);
             this.authorLastNameCheck.TabIndex = 4;
             this.authorLastNameCheck.UseVisualStyleBackColor = true;
             this.authorLastNameCheck.CheckedChanged += new System.EventHandler(this.authorLastNameCheck_CheckedChanged);
             // 
             // authorMiddleNameText
             // 
+            this.authorMiddleNameText.BackColor = System.Drawing.SystemColors.ControlLight;
             this.authorMiddleNameText.Location = new System.Drawing.Point(117, 46);
             this.authorMiddleNameText.MaxLength = 150;
             this.authorMiddleNameText.Name = "authorMiddleNameText";
-            this.authorMiddleNameText.ReadOnly = true;
-            this.authorMiddleNameText.Size = new System.Drawing.Size(279, 24);
+            this.authorMiddleNameText.Size = new System.Drawing.Size(279, 21);
             this.authorMiddleNameText.TabIndex = 3;
+            this.authorMiddleNameText.TextChanged += new System.EventHandler(this.authorMiddleNameText_TextChanged);
             // 
             // authorMiddleNameCheck
             // 
             this.authorMiddleNameCheck.AutoSize = true;
             this.authorMiddleNameCheck.Location = new System.Drawing.Point(93, 49);
             this.authorMiddleNameCheck.Name = "authorMiddleNameCheck";
-            this.authorMiddleNameCheck.Size = new System.Drawing.Size(18, 17);
+            this.authorMiddleNameCheck.Size = new System.Drawing.Size(15, 14);
             this.authorMiddleNameCheck.TabIndex = 2;
             this.authorMiddleNameCheck.UseVisualStyleBackColor = true;
             this.authorMiddleNameCheck.CheckedChanged += new System.EventHandler(this.authorMiddleNameCheck_CheckedChanged);
             // 
             // authorFirstNameText
             // 
+            this.authorFirstNameText.BackColor = System.Drawing.SystemColors.ControlLight;
             this.authorFirstNameText.Location = new System.Drawing.Point(117, 20);
             this.authorFirstNameText.MaxLength = 150;
             this.authorFirstNameText.Name = "authorFirstNameText";
-            this.authorFirstNameText.ReadOnly = true;
-            this.authorFirstNameText.Size = new System.Drawing.Size(279, 24);
+            this.authorFirstNameText.Size = new System.Drawing.Size(279, 21);
             this.authorFirstNameText.TabIndex = 1;
+            this.authorFirstNameText.TextChanged += new System.EventHandler(this.authorFirstNameText_TextChanged);
             // 
             // authorFirstNameCheck
             // 
             this.authorFirstNameCheck.AutoSize = true;
             this.authorFirstNameCheck.Location = new System.Drawing.Point(93, 23);
             this.authorFirstNameCheck.Name = "authorFirstNameCheck";
-            this.authorFirstNameCheck.Size = new System.Drawing.Size(18, 17);
+            this.authorFirstNameCheck.Size = new System.Drawing.Size(15, 14);
             this.authorFirstNameCheck.TabIndex = 0;
             this.authorFirstNameCheck.UseVisualStyleBackColor = true;
             this.authorFirstNameCheck.CheckedChanged += new System.EventHandler(this.authorFirstNameCheck_CheckedChanged);
@@ -186,58 +189,61 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(9, 106);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(72, 17);
+            this.label7.Size = new System.Drawing.Size(59, 13);
             this.label7.TabIndex = 12;
             this.label7.Text = "Н&азвание:";
             // 
             // bookTitleText
             // 
+            this.bookTitleText.BackColor = System.Drawing.SystemColors.ControlLight;
             this.bookTitleText.Location = new System.Drawing.Point(117, 102);
             this.bookTitleText.MaxLength = 150;
             this.bookTitleText.Name = "bookTitleText";
-            this.bookTitleText.ReadOnly = true;
-            this.bookTitleText.Size = new System.Drawing.Size(279, 24);
+            this.bookTitleText.Size = new System.Drawing.Size(279, 21);
             this.bookTitleText.TabIndex = 11;
+            this.bookTitleText.TextChanged += new System.EventHandler(this.bookTitleText_TextChanged);
             // 
             // bookTitleCheck
             // 
             this.bookTitleCheck.AutoSize = true;
             this.bookTitleCheck.Location = new System.Drawing.Point(93, 106);
             this.bookTitleCheck.Name = "bookTitleCheck";
-            this.bookTitleCheck.Size = new System.Drawing.Size(18, 17);
+            this.bookTitleCheck.Size = new System.Drawing.Size(15, 14);
             this.bookTitleCheck.TabIndex = 10;
             this.bookTitleCheck.UseVisualStyleBackColor = true;
             this.bookTitleCheck.CheckedChanged += new System.EventHandler(this.bookTitleCheck_CheckedChanged);
             // 
             // bookNumberText
             // 
+            this.bookNumberText.BackColor = System.Drawing.SystemColors.ControlLight;
             this.bookNumberText.Location = new System.Drawing.Point(117, 75);
             this.bookNumberText.Maximum = new decimal(new int[] {
-            900,
+            3000,
             0,
             0,
             0});
             this.bookNumberText.Name = "bookNumberText";
-            this.bookNumberText.ReadOnly = true;
-            this.bookNumberText.Size = new System.Drawing.Size(279, 24);
+            this.bookNumberText.Size = new System.Drawing.Size(279, 21);
             this.bookNumberText.TabIndex = 9;
+            this.bookNumberText.ValueChanged += new System.EventHandler(this.bookNumberText_ValueChanged);
             // 
             // bookGenreText
             // 
+            this.bookGenreText.BackColor = System.Drawing.SystemColors.Window;
             this.bookGenreText.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.bookGenreText.Enabled = false;
             this.bookGenreText.FormattingEnabled = true;
             this.bookGenreText.Location = new System.Drawing.Point(117, 20);
             this.bookGenreText.Name = "bookGenreText";
-            this.bookGenreText.Size = new System.Drawing.Size(279, 25);
+            this.bookGenreText.Size = new System.Drawing.Size(279, 21);
             this.bookGenreText.TabIndex = 4;
+            this.bookGenreText.TextChanged += new System.EventHandler(this.bookGenreText_TextChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(9, 77);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(54, 17);
+            this.label4.Size = new System.Drawing.Size(42, 13);
             this.label4.TabIndex = 8;
             this.label4.Text = "&Номер:";
             // 
@@ -246,7 +252,7 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(9, 50);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(52, 17);
+            this.label5.Size = new System.Drawing.Size(42, 13);
             this.label5.TabIndex = 7;
             this.label5.Text = "&Серия:";
             // 
@@ -255,7 +261,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(9, 23);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(50, 17);
+            this.label6.Size = new System.Drawing.Size(39, 13);
             this.label6.TabIndex = 6;
             this.label6.Text = "&Жанр:";
             // 
@@ -264,26 +270,27 @@
             this.bookNumberCheck.AutoSize = true;
             this.bookNumberCheck.Location = new System.Drawing.Point(93, 78);
             this.bookNumberCheck.Name = "bookNumberCheck";
-            this.bookNumberCheck.Size = new System.Drawing.Size(18, 17);
+            this.bookNumberCheck.Size = new System.Drawing.Size(15, 14);
             this.bookNumberCheck.TabIndex = 7;
             this.bookNumberCheck.UseVisualStyleBackColor = true;
             this.bookNumberCheck.CheckedChanged += new System.EventHandler(this.bookNumberCheck_CheckedChanged);
             // 
             // bookSeriesText
             // 
+            this.bookSeriesText.BackColor = System.Drawing.SystemColors.ControlLight;
             this.bookSeriesText.Location = new System.Drawing.Point(117, 46);
             this.bookSeriesText.MaxLength = 150;
             this.bookSeriesText.Name = "bookSeriesText";
-            this.bookSeriesText.ReadOnly = true;
-            this.bookSeriesText.Size = new System.Drawing.Size(279, 24);
+            this.bookSeriesText.Size = new System.Drawing.Size(279, 21);
             this.bookSeriesText.TabIndex = 6;
+            this.bookSeriesText.TextChanged += new System.EventHandler(this.bookSeriesText_TextChanged);
             // 
             // bookSeriesCheck
             // 
             this.bookSeriesCheck.AutoSize = true;
             this.bookSeriesCheck.Location = new System.Drawing.Point(93, 50);
             this.bookSeriesCheck.Name = "bookSeriesCheck";
-            this.bookSeriesCheck.Size = new System.Drawing.Size(18, 17);
+            this.bookSeriesCheck.Size = new System.Drawing.Size(15, 14);
             this.bookSeriesCheck.TabIndex = 5;
             this.bookSeriesCheck.UseVisualStyleBackColor = true;
             this.bookSeriesCheck.CheckedChanged += new System.EventHandler(this.bookSeriesCheck_CheckedChanged);
@@ -293,7 +300,7 @@
             this.bookGenreCheck.AutoSize = true;
             this.bookGenreCheck.Location = new System.Drawing.Point(93, 23);
             this.bookGenreCheck.Name = "bookGenreCheck";
-            this.bookGenreCheck.Size = new System.Drawing.Size(18, 17);
+            this.bookGenreCheck.Size = new System.Drawing.Size(15, 14);
             this.bookGenreCheck.TabIndex = 3;
             this.bookGenreCheck.UseVisualStyleBackColor = true;
             this.bookGenreCheck.CheckedChanged += new System.EventHandler(this.bookGenreCheck_CheckedChanged);
@@ -338,8 +345,9 @@
             this.Name = "ChangeProperties";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Изменить метаданные";
+            this.Shown += new System.EventHandler(this.ChangeProperties_Shown);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -376,6 +384,5 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox bookTitleText;
         private System.Windows.Forms.CheckBox bookTitleCheck;
-
     }
 }

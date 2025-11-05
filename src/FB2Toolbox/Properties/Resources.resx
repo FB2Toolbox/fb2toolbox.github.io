@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ConfirmationCaption" xml:space="preserve">
     <value>Подтверждение</value>
@@ -326,5 +326,20 @@
   </data>
   <data name="ProgressEditFileError" xml:space="preserve">
     <value>Ошибка редактирования '{0}' - '{1}'</value>
+  </data>
+  <data name="ConfirmationDeleteFile" xml:space="preserve">
+    <value>Вы уверены что хотите удалить файл '{0}'?</value>
+  </data>
+  <data name="ConfirmationDelete" xml:space="preserve">
+    <value>Вы уверены что хотите удалить {0} файл(ов)?</value>
+  </data>
+  <data name="ConfirmationRemove" xml:space="preserve">
+    <value>Вы уверены что хотите скрыть {0} файл(ов)?</value>
+  </data>
+  <data name="ConfirmationRemoveFile" xml:space="preserve">
+    <value>Вы уверены что хотите скрыть файл '{0}'?</value>
+  </data>
+  <data name="ExecuteCommandErrorEmpty" xml:space="preserve">
+    <value>Ошибка выполнения команды '{0}' - пустая строка</value>
   </data>
 </root>
