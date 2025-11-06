@@ -1,14 +1,15 @@
 using System;
+using System.ComponentModel;
 using FB2Toolbox.Entities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using AwesomeAssertions;
+using Xunit;
 
 namespace FB2ToolboxUnitTest
 {
-    [TestClass]
     public class FB2BookTests
     {
-        [TestMethod]
-        [TestCategory("FB2Book")]
+        [Fact]
+        [Trait("Category", "FB2Book")]
         [Description("Test FB2Book default constructor initializes properties correctly")]
         public void FB2Book_DefaultConstructor_InitializesProperties()
         {
@@ -16,19 +17,19 @@ namespace FB2ToolboxUnitTest
             var book = new FB2Book();
 
             // Assert
-            Assert.AreEqual(string.Empty, book.BookFile);
-            Assert.AreEqual(string.Empty, book.BookAuthorFirstName);
-            Assert.AreEqual(string.Empty, book.BookAuthorLastName);
-            Assert.AreEqual(string.Empty, book.BookAuthorMiddleName);
-            Assert.AreEqual(string.Empty, book.BookEncoding);
-            Assert.AreEqual(string.Empty, book.BookTitle);
-            Assert.AreEqual(string.Empty, book.BookSequenceName);
-            Assert.IsNull(book.BookSequenceNr);
-            Assert.AreEqual(string.Empty, book.BookLang);
+            book.BookFile.Should().BeEmpty();
+            book.BookAuthorFirstName.Should().BeEmpty();
+            book.BookAuthorLastName.Should().BeEmpty();
+            book.BookAuthorMiddleName.Should().BeEmpty();
+            book.BookEncoding.Should().BeEmpty();
+            book.BookTitle.Should().BeEmpty();
+            book.BookSequenceName.Should().BeEmpty();
+            book.BookSequenceNr.Should().BeNull();
+            book.BookLang.Should().BeEmpty();
         }
 
-        [TestMethod]
-        [TestCategory("FB2Book")]
+        [Fact]
+        [Trait("Category", "FB2Book")]
         [Description("Test FB2Book CompareTo by LastName")]
         public void FB2Book_CompareTo_ComparesByLastName()
         {
@@ -40,11 +41,11 @@ namespace FB2ToolboxUnitTest
             int result = book1.CompareTo(book2);
 
             // Assert
-            Assert.IsTrue(result < 0, "Ivanov should come before Petrov");
+            result.Should().BeLessThan(0);
         }
 
-        [TestMethod]
-        [TestCategory("FB2Book")]
+        [Fact]
+        [Trait("Category", "FB2Book")]
         [Description("Test FB2Book CompareTo by FirstName when LastName is equal")]
         public void FB2Book_CompareTo_ComparesByFirstNameWhenLastNameEqual()
         {
@@ -64,11 +65,11 @@ namespace FB2ToolboxUnitTest
             int result = book1.CompareTo(book2);
 
             // Assert
-            Assert.IsTrue(result < 0, "Ivan should come before Petr");
+            result.Should().BeLessThan(0);
         }
 
-        [TestMethod]
-        [TestCategory("FB2Book")]
+        [Fact]
+        [Trait("Category", "FB2Book")]
         [Description("Test FB2Book CompareTo by SequenceName when author names are equal")]
         public void FB2Book_CompareTo_ComparesBySequenceNameWhenAuthorsEqual()
         {
@@ -90,11 +91,11 @@ namespace FB2ToolboxUnitTest
             int result = book1.CompareTo(book2);
 
             // Assert
-            Assert.IsTrue(result < 0, "Series A should come before Series B");
+            result.Should().BeLessThan(0);
         }
 
-        [TestMethod]
-        [TestCategory("FB2Book")]
+        [Fact]
+        [Trait("Category", "FB2Book")]
         [Description("Test FB2Book CompareTo by SequenceNr when everything else is equal")]
         public void FB2Book_CompareTo_ComparesBySequenceNrWhenOthersEqual()
         {
@@ -118,11 +119,11 @@ namespace FB2ToolboxUnitTest
             int result = book1.CompareTo(book2);
 
             // Assert
-            Assert.IsTrue(result < 0, "Book 1 should come before Book 2");
+            result.Should().BeLessThan(0);
         }
 
-        [TestMethod]
-        [TestCategory("FB2Book")]
+        [Fact]
+        [Trait("Category", "FB2Book")]
         [Description("Test FB2Book CompareTo by Title when all else is equal")]
         public void FB2Book_CompareTo_ComparesByTitleWhenAllElseEqual()
         {
@@ -148,11 +149,11 @@ namespace FB2ToolboxUnitTest
             int result = book1.CompareTo(book2);
 
             // Assert
-            Assert.IsTrue(result < 0, "Book A should come before Book B");
+            result.Should().BeNegative();
         }
 
-        [TestMethod]
-        [TestCategory("FB2Book")]
+        [Fact]
+        [Trait("Category", "FB2Book")]
         [Description("Test FB2Book CompareTo returns 0 for equal books")]
         public void FB2Book_CompareTo_ReturnsZeroForEqualBooks()
         {
@@ -178,11 +179,11 @@ namespace FB2ToolboxUnitTest
             int result = book1.CompareTo(book2);
 
             // Assert
-            Assert.AreEqual(0, result, "Identical books should return 0");
+            result.Should().Be(0);
         }
 
-        [TestMethod]
-        [TestCategory("FB2Book")]
+        [Fact]
+        [Trait("Category", "FB2Book")]
         [Description("Test FB2Book CompareTo with null sequence numbers")]
         public void FB2Book_CompareTo_HandlesNullSequenceNumbers()
         {
@@ -206,13 +207,12 @@ namespace FB2ToolboxUnitTest
             int result = book1.CompareTo(book2);
 
             // Assert
-            Assert.IsTrue(result < 0, "Null sequence number should come before numbered");
+            result.Should().BeNegative();
         }
 
-        [TestMethod]
-        [TestCategory("FB2Book")]
+        [Fact]
+        [Trait("Category", "FB2Book")]
         [Description("Test FB2Book CompareTo throws InvalidCastException for non-IBook object")]
-        [ExpectedException(typeof(InvalidCastException))]
         public void FB2Book_CompareTo_ThrowsExceptionForInvalidType()
         {
             // Arrange
@@ -220,13 +220,14 @@ namespace FB2ToolboxUnitTest
             var invalidObject = "not a book";
 
             // Act
-            book.CompareTo(invalidObject);
+            Action act = () => book.CompareTo(invalidObject);
 
             // Assert - exception expected
+            act.Should().Throw<InvalidCastException>();
         }
 
-        [TestMethod]
-        [TestCategory("FB2Book")]
+        [Fact]
+        [Trait("Category", "FB2Book")]
         [Description("Test FB2Book CompareTo is case insensitive")]
         public void FB2Book_CompareTo_IsCaseInsensitive()
         {
@@ -238,7 +239,7 @@ namespace FB2ToolboxUnitTest
             int result = book1.CompareTo(book2);
 
             // Assert
-            Assert.AreEqual(0, result, "Comparison should be case insensitive");
+            result.Should().Be(0);
         }
     }
 }

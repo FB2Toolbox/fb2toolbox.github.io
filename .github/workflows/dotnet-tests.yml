@@ -1,0 +1,69 @@
+name: .NET Framework Tests
+
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'FB2Toolbox.sln'
+      - '**/*.csproj'
+      - '.github/workflows/dotnet-tests.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'FB2Toolbox.sln'
+      - '**/*.csproj'
+      - '.github/workflows/dotnet-tests.yml'
+
+jobs:
+  build-and-test:
+    # .NET Framework projects (TargetFramework v4.8) require Windows/MSBuild
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Install NuGet
+        uses: NuGet/setup-nuget@v1
+
+      - name: Restore NuGet packages
+        run: nuget restore FB2Toolbox.sln
+        shell: pwsh
+
+      - name: Build solution with MSBuild
+        run: msbuild FB2Toolbox.sln /p:Configuration=Release /m
+        shell: pwsh
+
+      - name: Run unit tests with xUnit
+        run: |
+          $testDll = "tests\FB2ToolboxUnitTest\bin\x86\Release\FB2ToolboxUnitTest.dll"
+          
+          if (-Not (Test-Path $testDll)) {
+            Write-Error "Test assembly not found at: $testDll"
+            exit 1
+          }
+          
+          Write-Host "Running xUnit tests from: $testDll"
+          
+          # Use VSTest with xUnit adapter (from xunit.runner.visualstudio package)
+          # VSTest is available on windows-latest runners
+          $vstestPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"
+          
+          if (-Not (Test-Path $vstestPath)) {
+            # Try alternative paths for different VS editions
+            $vstestPath = Get-ChildItem "C:\Program Files\Microsoft Visual Studio\2022" -Recurse -Filter "vstest.console.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+          }
+          
+          if (-Not $vstestPath) {
+            Write-Error "vstest.console.exe not found"
+            exit 1
+          }
+          
+          Write-Host "Using VSTest from: $vstestPath"
+          & $vstestPath $testDll /logger:"console;verbosity=normal"
+        shell: pwsh
